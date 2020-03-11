@@ -220,7 +220,7 @@
         let my_provinces = Object.keys(global_data[0]);
         let item = '';
         let legends = [];
-        let legendselected;
+        let legendselected=new Object();
         for (let i = 0; i < my_provinces.length; i++) {
             item = my_provinces[i];
             if (item !== 'Time' && item !== 'Sum' && item !== 'Total death' && item.trim() !== '') {
@@ -244,8 +244,6 @@
         for(let i=1;i<data.length;i++){
             res.push(data[i]-data[i-1])
             }
-        //X=X.splice(0,1)
-        console.log(res)
         lines.push({name: 'daily', data: res, type: 'line'});
 
         return [X,lines,legends]
@@ -259,7 +257,7 @@
         let my_provinces = Object.keys(global_data[0]);
         let item = '';
         let legends = [];
-        let legendselected={};
+        let legendselected=new Object();
         for (let i = 0; i < my_provinces.length; i++) {
             item = my_provinces[i];
             if (item !== 'Time' && item !== 'Sum' && item !== 'Total death' && item.trim() !== '') {
