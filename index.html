@@ -313,7 +313,30 @@
             yAxis: {
                 type: 'value'
             },
-            series: lines
+            series: lines,
+            dataZoom: [
+                {
+                    type: 'slider',
+                    xAxisIndex: 0,
+                    filterMode: 'empty'
+                },
+                {
+                    type: 'slider',
+                    yAxisIndex: 0,
+                    filterMode: 'empty'
+                },
+                {
+                    type: 'inside',
+                    xAxisIndex: 0,
+                    filterMode: 'empty'
+                },
+                {
+                    type: 'inside',
+                    yAxisIndex: 0,
+                    filterMode: 'empty'
+                }
+            ],
+
         };
         if (option && typeof option === "object") {
             myChart.setOption(option, true);
