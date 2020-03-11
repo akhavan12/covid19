@@ -220,7 +220,7 @@
         let my_provinces = Object.keys(global_data[0]);
         let item = '';
         let legends = [];
-        let legendselected=new Object();
+        let legendselected={};
         for (let i = 0; i < my_provinces.length; i++) {
             item = my_provinces[i];
             if (item !== 'Time' && item !== 'Sum' && item !== 'Total death' && item.trim() !== '') {
@@ -257,7 +257,7 @@
         let my_provinces = Object.keys(global_data[0]);
         let item = '';
         let legends = [];
-        let legendselected=new Object();
+        let legendselected={};
         for (let i = 0; i < my_provinces.length; i++) {
             item = my_provinces[i];
             if (item !== 'Time' && item !== 'Sum' && item !== 'Total death' && item.trim() !== '') {
@@ -290,6 +290,7 @@
         for (let i = 0; i < legends.length; i++) {
             item = legends[i];
             lines.push({name: item, data: get_key_data(global_data, item), type: 'line'})
+            lines.push({name: item, data: get_key_data(global_data, item), type: 'bar'})
         }
         return [X,lines,legends,legendselected]
     }
