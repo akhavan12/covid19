@@ -1,2 +1,0 @@
-#!/bin/sh
-julia -JSysImage.so --color=yes --depwarn=no -q -L bootstrap.jl -- "$@"
