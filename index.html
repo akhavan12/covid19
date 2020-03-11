@@ -93,7 +93,7 @@
 
 <script>
     let data=[];
-    let global_test
+    let global_test;
     let mapCanvas;
     function initiate(width=400, height=400)
     {
@@ -173,14 +173,14 @@
             //////////////////////load charts
 
             let prov_data=update_all_provinces(country[1]);
-            plot('chart_1_2',prov_data[0],prov_data[1],prov_data[2]);
+            plot('chart_1_2',prov_data[0],prov_data[1],prov_data[2],prov_data[3]);
             let sums=cumulative(country[1]);
-            plot('chart_2_1',sums[0],sums[1],sums[2])
+            plot('chart_2_1',sums[0],sums[1],sums[2]);
 
             //let dayCases=daily_cases(country[1]);
             let dayCases = daily_cases_by_province(country[1]);
 
-            plot('chart_2_2',dayCases[0],dayCases[1],dayCases[2])
+            plot('chart_2_2',dayCases[0],dayCases[1],dayCases[2],dayCases[3])
 
 
         }
@@ -220,12 +220,14 @@
         let my_provinces = Object.keys(global_data[0]);
         let item = '';
         let legends = [];
+        let legendselected;
         for (let i = 0; i < my_provinces.length; i++) {
             item = my_provinces[i];
             if (item !== 'Time' && item !== 'Sum' && item !== 'Total death' && item.trim() !== '') {
                 legends.push(item);
+                legendselected[item]=false;
                 lines.push({name: item, data: get_key_data(global_data,item), type: 'line'})}}
-        return [X,lines,legends]}
+        return [X,lines,legends,legendselected]}
 
 
     function daily_cases(global_data)
@@ -257,12 +259,14 @@
         let my_provinces = Object.keys(global_data[0]);
         let item = '';
         let legends = [];
+        let legendselected={};
         for (let i = 0; i < my_provinces.length; i++) {
             item = my_provinces[i];
             if (item !== 'Time' && item !== 'Sum' && item !== 'Total death' && item.trim() !== '') {
                 legends.push(item);
+                legendselected[item]=false;
                 lines.push({name: item, data: cumsum_to_daily(get_key_data(global_data,item)), type: 'line'})}}
-        return [X,lines,legends]}
+        return [X,lines,legends,legendselected]}
 
 
     function cumsum_to_daily(cumsum=[])
@@ -282,17 +286,18 @@
         let cumsum = get_key_data(global_data,'Sum');
         let total_dead=get_key_data(global_data,'Total death');
         let legends=['Sum','Total death'];
+        let legendselected={'Sum':false,'Total death':false};
         let lines=[];
         let item = '';
         for (let i = 0; i < legends.length; i++) {
             item = legends[i];
             lines.push({name: item, data: get_key_data(global_data, item), type: 'line'})
         }
-        return [X,lines,legends]
+        return [X,lines,legends,legendselected]
     }
         
         
-    function plot(div,X,lines,legends)
+    function plot(div,X,lines,legends,legendselected=[])
     {
         let dom = document.getElementById(div);
         let myChart = echarts.init(dom);
@@ -300,7 +305,8 @@
         let option = null;
         option = {
             legend: {
-                data: legends
+                data: legends,
+                selected:legendselected
             },
             tooltip: {
                 trigger: 'axis'
