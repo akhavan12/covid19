@@ -17,7 +17,7 @@
 
 </head>
 <body style="height: 100%; margin: 0">
-<table border="4">
+<table border="0">
     <tr>
         <td width="50%">
 
@@ -173,14 +173,14 @@
             //////////////////////load charts
 
             let prov_data=update_all_provinces(country[1]);
-            plot('chart_1_2',prov_data[0],prov_data[1],prov_data[2],prov_data[3]);
+            plot('chart_1_2',prov_data[0],prov_data[1],prov_data[2],prov_data[3],title='All Provinces/States');
             let sums=cumulative(country[1]);
-            plot('chart_2_1',sums[0],sums[1],sums[2]);
+            plot('chart_2_1',sums[0],sums[1],sums[2],sums[3],title='Total Confirmed and Death');
 
             //let dayCases=daily_cases(country[1]);
             let dayCases = daily_cases_by_province(country[1]);
 
-            plot('chart_2_2',dayCases[0],dayCases[1],dayCases[2],dayCases[3])
+            plot('chart_2_2',dayCases[0],dayCases[1],dayCases[2],dayCases[3],title='Number of Daily New Cases')
 
 
         }
@@ -284,28 +284,44 @@
         let cumsum = get_key_data(global_data,'Sum');
         let total_dead=get_key_data(global_data,'Total death');
         let legends=['Sum','Total death'];
-        let legendselected={'Sum':false,'Total death':false};
+        let legendselected={'Sum':true,'Total death':true};
         let lines=[];
         let item = '';
         for (let i = 0; i < legends.length; i++) {
             item = legends[i];
-            lines.push({name: item, data: get_key_data(global_data, item), type: 'line'})
-            lines.push({name: item, data: get_key_data(global_data, item), type: 'bar'})
+            lines.push({name: item, data: get_key_data(global_data, item), type: 'line'});
+            lines.push({name: item, data: get_key_data(global_data, item), type: 'bar'});
         }
         return [X,lines,legends,legendselected]
     }
         
         
-    function plot(div,X,lines,legends,legendselected=[])
+    function plot(div,X,lines,legends,legendselected=[],title='',subtext='',orientation_from_left='center')
     {
         let dom = document.getElementById(div);
         let myChart = echarts.init(dom);
         let app = {};
         let option = null;
         option = {
+            title: {
+
+                text: title,
+                subtext: subtext,
+                left: orientation_from_left,
+                top: 'bottom',
+                ///textStyle: 'lighter',
+                textStyle: {
+                    fontWeight:200,
+                    color : 'black'
+                }
+
+            },
             legend: {
                 data: legends,
-                selected:legendselected
+                selected:legendselected,
+                orient : 'vertical',
+                align : 'right',
+                right : '100'
             },
             tooltip: {
                 trigger: 'axis'
@@ -323,7 +339,9 @@
                 {
                     type: 'slider',
                     xAxisIndex: 0,
-                    filterMode: 'empty'
+                    filterMode: 'empty',
+                    show:false
+
                 },
                 {
                     type: 'slider',
