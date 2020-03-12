@@ -185,10 +185,7 @@
 
         }
         d3.select(self.frameElement).style("height", height + "px");
-
-
-
-
+        
     };
     ////////////dropdown menu change
     d3.select("#select_countries")
@@ -294,8 +291,7 @@
         }
         return [X,lines,legends,legendselected]
     }
-        
-        
+
     function plot(div,X,lines,legends,legendselected=[],title='',subtext='',orientation_from_left='center')
     {
         let dom = document.getElementById(div);
@@ -322,6 +318,7 @@
                 orient : 'vertical',
                 align : 'right',
                 right : '100'
+
             },
             tooltip: {
                 trigger: 'axis'
