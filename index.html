@@ -140,8 +140,7 @@
             let color = d3.scaleLinear()
                 .domain(minmax)
                 .range(['#d7d0d0',
-                    '#D72000',
-                    '#9e0024'])
+                    '#731d1d'])
                 .interpolate(d3.interpolateHcl);
             mapCanvas.selectAll("path").remove();
             mapCanvas.append("g")
