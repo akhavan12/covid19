@@ -22,8 +22,9 @@
         <td width="50%">
 
             <select id="select_countries">
-                <option value="south-korea" selected>South Korea</option>
+                <option value="south-korea">South Korea</option>
                 <option value="iran">Iran</option>
+                <option value="italy" selected>Italy</option>
                 <option value="algeria">Algeria</option>
                 <option value="argentina">Argentina</option>
                 <option value="azerbaijan">Azerbaijan</option>
@@ -36,9 +37,7 @@
                 <option value="france">France</option>
                 <option value="germany">Germany</option>
                 <option value="india">India</option>
-
                 <option value="ireland">Ireland</option>
-                <option value="italy">Italy</option>
                 <option value="japan">Japan</option>
                 <option value="liberia">Liberia</option>
                 <option value="nepal">Nepal</option>
@@ -53,7 +52,6 @@
                 <option value="portugal">Portugal</option>
                 <option value="romania">Romania</option>
                 <option value="south-africa">South Africa</option>
-
                 <option value="spain">Spain</option>
                 <option value="sweden">Sweden</option>
                 <option value="turkey">Turkey</option>
@@ -151,8 +149,8 @@
                 .attr("fill", function(d) {
                     if(stat.length>0)
                     {
-                        console.log(d.properties.Name)
-                        return color(parseInt(stat[stat.length - 1][d.properties.Name]))
+                        console.log(d.properties.NAME_1)
+                        return color(parseInt(stat[stat.length - 1][d.properties.NAME_1]))
                     }
                     else
                     {
@@ -163,6 +161,7 @@
                 .style("stroke-width", "1")
                 .attr("d", path)
                 .on("mousemove", function (d) {
+                    console.log(d)
                 });
             mapCanvas
                 .insert("path")
@@ -198,7 +197,7 @@
             makePlots(country_name=country_name,strCountry=selecteCountry+"/topo.json");
         });
     initiate();
-    makePlots(country_name='south-korea',strCountry="./content/countries/south-korea/topo.json");
+    makePlots(country_name='italy',strCountry="./content/countries/italy/topo.json");
 
 
     ///////////// charts using eCharts
