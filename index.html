@@ -22,6 +22,8 @@
         <td width="50%">
 
             <select id="select_countries">
+                <option value="south-korea" selected>South Korea</option>
+                <option value="iran">Iran</option>
                 <option value="algeria">Algeria</option>
                 <option value="argentina">Argentina</option>
                 <option value="azerbaijan">Azerbaijan</option>
@@ -34,7 +36,7 @@
                 <option value="france">France</option>
                 <option value="germany">Germany</option>
                 <option value="india">India</option>
-                <option value="iran" selected>Iran</option>
+
                 <option value="ireland">Ireland</option>
                 <option value="italy">Italy</option>
                 <option value="japan">Japan</option>
@@ -51,6 +53,7 @@
                 <option value="portugal">Portugal</option>
                 <option value="romania">Romania</option>
                 <option value="south-africa">South Africa</option>
+
                 <option value="spain">Spain</option>
                 <option value="sweden">Sweden</option>
                 <option value="turkey">Turkey</option>
@@ -114,14 +117,13 @@
         }
         return [d3.min(lst_infected),d3.max(lst_infected)]
     }
-    let makePlots=function (strCountry="",width=400, height=400)
+    let makePlots=function (country_name,strCountry="",width=400, height=400)
     {
         Promise.all([
              d3.json(strCountry)
-            ,d3.csv("content/stats/iran.csv")
-           // ,d3.json('sample.json')
+            ,d3.csv("content/stats/"+country_name+".csv")
         ])
-            .then(ready)
+            .then(ready);
 
 
         function ready(country) {
@@ -149,6 +151,7 @@
                 .attr("fill", function(d) {
                     if(stat.length>0)
                     {
+                        console.log(d.properties.Name)
                         return color(parseInt(stat[stat.length - 1][d.properties.Name]))
                     }
                     else
@@ -185,17 +188,17 @@
 
         }
         d3.select(self.frameElement).style("height", height + "px");
-        
+
     };
     ////////////dropdown menu change
     d3.select("#select_countries")
         .on('change',function()
-        {
-            let selecteCountry='./content/countries/'+d3.select(this).property('value')+'/';
-            makePlots(strCountry=selecteCountry+"/topo.json");
+        {   let country_name=d3.select(this).property('value')
+            let selecteCountry='./content/countries/'+country_name+'/';
+            makePlots(country_name=country_name,strCountry=selecteCountry+"/topo.json");
         });
     initiate();
-    makePlots(strCountry="./content/countries/iran/topo.json");
+    makePlots(country_name='south-korea',strCountry="./content/countries/south-korea/topo.json");
 
 
     ///////////// charts using eCharts
@@ -222,7 +225,16 @@
             item = my_provinces[i];
             if (item !== 'Time' && item !== 'Sum' && item !== 'Total death' && item.trim() !== '') {
                 legends.push(item);
-                legendselected[item]=false;
+                if(i===1)
+                {
+                    console.log("true")
+                    legendselected[item]=true;
+                }
+                else
+                {
+                    legendselected[item]=false;
+                }
+
                 lines.push({name: item, data: get_key_data(global_data,item), type: 'line'})}}
         return [X,lines,legends,legendselected]}
 
@@ -257,9 +269,18 @@
         let legendselected={};
         for (let i = 0; i < my_provinces.length; i++) {
             item = my_provinces[i];
+
             if (item !== 'Time' && item !== 'Sum' && item !== 'Total death' && item.trim() !== '') {
                 legends.push(item);
-                legendselected[item]=false;
+                if(i===1)
+                {
+                    console.log(i)
+                    legendselected[item]=true;
+                }
+                else
+                {
+                    legendselected[item]=false;
+                }
                 lines.push({name: item, data: cumsum_to_daily(get_key_data(global_data,item)), type: 'line'})}}
         return [X,lines,legends,legendselected]}
 
