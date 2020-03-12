@@ -22,10 +22,13 @@
         <td width="50%">
 
             <select id="select_countries">
+                <option value="japan" selected>Japan</option>
                 <option value="south-korea">South Korea</option>
                 <option value="iran">Iran</option>
-                <option value="italy" selected>Italy</option>
+                <option value="italy" >Italy</option>
+               <!--
                 <option value="algeria">Algeria</option>
+
                 <option value="argentina">Argentina</option>
                 <option value="azerbaijan">Azerbaijan</option>
                 <option value="belgium">Belgium</option>
@@ -38,7 +41,7 @@
                 <option value="germany">Germany</option>
                 <option value="india">India</option>
                 <option value="ireland">Ireland</option>
-                <option value="japan">Japan</option>
+
                 <option value="liberia">Liberia</option>
                 <option value="nepal">Nepal</option>
                 <option value="netherlands">Netherlands</option>
@@ -58,7 +61,7 @@
                 <option value="united-arab-emirates">United Arab Emirates</option>
                 <option value="united-kingdom">United Kingdom</option>
                 <option value="us-states">United states</option>
-                <option value="venezuela">Venezuela</option>
+                <option value="venezuela">Venezuela</option>-->
             </select>
         </td>
     </tr>
@@ -149,8 +152,19 @@
                 .attr("fill", function(d) {
                     if(stat.length>0)
                     {
-                        console.log(d.properties.NAME_1)
-                        return color(parseInt(stat[stat.length - 1][d.properties.NAME_1]))
+                        //console.log(d.properties.NAME_1)
+                        let val=stat[stat.length - 1][d.properties.NAME_1]
+                        if (val===undefined)
+                        {
+                            console.log(d.properties.NAME_1)
+                            return color(0)
+                        }
+                        else
+                            {
+                                return color(parseInt(val))
+                        }
+
+
                     }
                     else
                     {
@@ -194,10 +208,10 @@
         .on('change',function()
         {   let country_name=d3.select(this).property('value')
             let selecteCountry='./content/countries/'+country_name+'/';
-            makePlots(country_name=country_name,strCountry=selecteCountry+"/topo.json");
+            makePlots(country_name,strCountry=selecteCountry+"/topo.json");
         });
     initiate();
-    makePlots(country_name='italy',strCountry="./content/countries/italy/topo.json");
+    makePlots(country_name='japan',strCountry="./content/countries/japan/topo.json");
 
 
     ///////////// charts using eCharts
@@ -226,7 +240,6 @@
                 legends.push(item);
                 if(i===1)
                 {
-                    console.log("true")
                     legendselected[item]=true;
                 }
                 else
@@ -273,7 +286,6 @@
                 legends.push(item);
                 if(i===1)
                 {
-                    console.log(i)
                     legendselected[item]=true;
                 }
                 else
@@ -349,7 +361,9 @@
             },
 
             yAxis: {
-                type: 'value'
+                //logBase :10 ,
+                type: 'value',
+                triggerEvent: true,
             },
             series: lines,
             dataZoom: [
