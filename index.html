@@ -99,6 +99,18 @@
     let data=[];
     let global_test;
     let mapCanvas;
+
+
+
+    function set_echarts_option(canvas_id,objOptionUpdate={yAxis:{type:'log'}}){
+
+        let theChart = document.getElementById(canvas_id);
+        let existInstance = echarts.getInstanceByDom(theChart);
+        //console.log(existInstance.getOption().legend[0].selected['Toyama'])
+        console.log(objOptionUpdate);
+        existInstance.setOption(objOptionUpdate)
+    }
+
     function initiate(width=400, height=400)
     {
         mapCanvas = d3.select("#map_container")
@@ -173,9 +185,22 @@
                 })
                 .style("stroke-width", ".5")
                 .attr("d", path)
-                .on("mousemove", function (d) {
-                    console.log(d)
-                });
+                .on("click", function (d) {
+                    let touched_province=d.properties['NAME_1'];
+                    var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"true"}}]}');
+                    set_echarts_option("chart_1_2",opt_update)
+                })
+                /*.on("mousemove", function (d) {
+                    let touched_province=d.properties['NAME_1'];
+                    var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"true"}}]}');
+                    set_echarts_option("chart_1_2",opt_update)
+                })
+                .on("mouseout", function (d) {
+
+                    let touched_province=d.properties['NAME_1'];
+                    var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"false"}}]}');
+                    set_echarts_option("chart_1_2",opt_update)
+                })*/
             mapCanvas
                 .insert("path")
                 .datum(feat_data)
@@ -258,7 +283,6 @@
         let item = '';
         let legends = [];
         data=get_key_data(global_data,'Sum');
-        global_test=global_data;
         data.splice(0, 1);
         let res=[];
         for(let i=1;i<data.length;i++){
@@ -354,7 +378,7 @@
                 type: 'scroll',
                 orient: 'horizontal'
 
-                
+
             },
             tooltip: {
                 trigger: 'axis'
