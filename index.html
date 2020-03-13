@@ -41,20 +41,22 @@
                 <option value="south-korea">South Korea</option>
                 <option value="iran">Iran</option>
                 <option value="italy" >Italy</option>
-                <option value="germany" selected>Germany</option>
+                <option value="germany">Germany</option>
+                <option value="china" selected>China</option>
 
                 <!--
+                <option value="france">France</option>
                  <option value="algeria">Algeria</option>
 
                  <option value="argentina">Argentina</option>
                  <option value="azerbaijan">Azerbaijan</option>
                  <option value="belgium">Belgium</option>
-                 <option value="china">China</option>
+
                  <option value="colombia">Colombia</option>
                  <option value="czech-republic">Czech Republic</option>
                  <option value="denmark">Denmark</option>
                  <option value="finland">Finland</option>
-                 <option value="france">France</option>
+
                  <option value="india">India</option>
                  <option value="ireland">Ireland</option>
 
@@ -115,6 +117,9 @@
     let data=[];
     let global_test;
     let mapCanvas;
+
+    function arrayRemove(arr, value)
+    { return arr.filter(function(ele){ return ele != value; });}
 
 
 
@@ -213,6 +218,8 @@
                 .attr("class", "tooltip")
                 .style("opacity", 0);
 
+            let allCols=Object.keys(stat[0]);
+            let NotFoundCols=Object.keys(stat[0]);
 
             mapCanvas.selectAll("path").remove();
             mapCanvas.append("g")
@@ -227,14 +234,18 @@
                         let val=stat[stat.length - 1][d.properties.NAME_1]
                         if (val===undefined)
                         {
+                            //report umached province
                             //console.log(d.properties.NAME_1)
-                            return color(0)
+                            //MatchedColumns.push(d.properties.NAME_1)
+                            //NotFoundCols.push(d.properties.NAME_1)
+                            return "#dadada";
                         }
                         else
                             {
+                                NotFoundCols=arrayRemove(NotFoundCols,d.properties.NAME_1)
+
                                 return color(parseInt(val))
                         }
-
 
                     }
                     else
@@ -276,6 +287,14 @@
                     var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"false"}}]}');
                     set_echarts_option("chart_1_2",opt_update)
                 })*/
+
+
+            console.log(allCols);
+            console.log("\n");
+            console.log(NotFoundCols);
+
+
+
             mapCanvas
                 .insert("path")
                 .datum(feat_data)
@@ -310,7 +329,7 @@
             makePlots(country_name,strCountry=selecteCountry+"/topo.json");
         });
     initiate();
-    makePlots(country_name='germany',strCountry="./content/countries/germany/topo.json");
+    makePlots(country_name='china',strCountry="./content/countries/china/topo.json");
 
 
     ///////////// charts using eCharts
