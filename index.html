@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,15 +19,16 @@
         position: absolute;
         text-align: center;
         text-anchor: middle;
-        width: 80px;
-        height: 36px;
+        /*width: 80px;*/
+        /*height: 36px;*/
+    /*line-height: 36px;*/
         padding: 2px;
         font: 12px sans-serif;
         color: #0a0a0a;
         background: #fff;
         border: 0px;
         pointer-events: none;
-    }
+}
 </style>
 </head>
 <body style="height: 100%; margin: 0">
@@ -207,12 +208,13 @@
                     }
 
                 })
-                .style("stroke-width", ".5")
+                .style("stroke-width", ".3")
                 .attr("d", path)
                 .on("click", function (d) {
                     let touched_province=d.properties['NAME_1'];
-                    var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"true"}}]}');
+                    let opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"true"}}]}');
                     set_echarts_option("chart_1_2",opt_update)
+                    set_echarts_option("chart_2_2",opt_update)
                 })
                 .on("mouseover",(d)=>{
                     tooltip.transition()
