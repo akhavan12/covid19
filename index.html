@@ -117,13 +117,28 @@
 
 
 
-    function set_echarts_option(canvas_id,objOptionUpdate={yAxis:{type:'log'}}){
+    function set_echarts_option(canvas_id,objOptionUpdate={yAxis:{type:'log'}})
+    {
 
         let theChart = document.getElementById(canvas_id);
         let existInstance = echarts.getInstanceByDom(theChart);
         //console.log(existInstance.getOption().legend[0].selected['Toyama'])
         console.log(objOptionUpdate);
         existInstance.setOption(objOptionUpdate)
+
+
+        let zr = existInstance.getZr();
+
+        zr.on('click', function (params) {
+            //let pointInPixel = [params.offsetX, params.offsetY];
+            //let pointInGrid = myChart.convertFromPixel('grid', pointInPixel);
+            console.log(params)
+        });
+
+        zr.on('mousemove', function (params) {
+            var pointInPixel = [params.offsetX, params.offsetY];
+            zr.setCursorStyle(existInstance.containPixel('grid', pointInPixel) ? 'copy' : 'default');
+        });
     }
 
     function initiate(width=400, height=400)
@@ -151,7 +166,26 @@
              d3.json(strCountry)
             ,d3.csv("content/stats/"+country_name+".csv")
         ])
-            .then(ready);
+            .then(ready)
+            .then(
+                function(){
+
+                    let theChart = document.getElementById("chart_1_2");
+                    let existInstance = echarts.getInstanceByDom(theChart);
+                    let zr = existInstance.getZr();
+
+                    zr.on('click', function (params) {
+                        //let pointInPixel = [params.offsetX, params.offsetY];
+                        //let pointInGrid = myChart.convertFromPixel('grid', pointInPixel);
+                        console.log(params)
+                    });
+
+                    zr.on('mousemove', function (params) {
+                        var pointInPixel = [params.offsetX, params.offsetY];
+                        zr.setCursorStyle(existInstance.containPixel('grid', pointInPixel) ? 'copy' : 'default');
+                    });
+                }
+            )
 
 
 
@@ -192,7 +226,7 @@
                         let val=stat[stat.length - 1][d.properties.NAME_1]
                         if (val===undefined)
                         {
-                            console.log(d.properties.NAME_1)
+                            //console.log(d.properties.NAME_1)
                             return color(0)
                         }
                         else
@@ -223,7 +257,7 @@
                     tooltip.html(d.properties['NAME_1'])
                         .style("left", (d3.event.pageX) + "px")
                         .style("top", (d3.event.pageY - 28) + "px");
-                        console.log(d.properties['NAME_1'])
+                        //console.log(d.properties['NAME_1'])
                 })
                 .on("mouseout", function(d) {
                     tooltip.transition()
@@ -465,7 +499,10 @@
         if (option && typeof option === "object") {
             myChart.setOption(option, true);
         }
+
+
     }
+
 
 
 
