@@ -139,8 +139,8 @@
             let minmax=get_stat_min_max(country[1])
             let color = d3.scaleLinear()
                 .domain(minmax)
-                .range(['#d7d0d0',
-                    '#731d1d'])
+                .range(['#cbbbbb',
+                    '#5b000e'])
                 .interpolate(d3.interpolateHcl);
             mapCanvas.selectAll("path").remove();
             mapCanvas.append("g")
@@ -181,7 +181,7 @@
                 .datum(feat_data)
                 .attr("d", path)
                 .attr('fill','none')
-                .style("stroke", "#eeeeee")
+                .style("stroke", "#fafafa")
                 .style("stroke-width", ".5");
 
 
@@ -344,12 +344,17 @@
 
             },
             legend: {
+
+
                 data: legends,
                 selected:legendselected,
-                orient : 'vertical',
-                align : 'right',
-                right : '100'
+                //orient : 'vertical',
+                //align : 'right',
+                //right : '100',
+                type: 'scroll',
+                orient: 'horizontal'
 
+                
             },
             tooltip: {
                 trigger: 'axis'
