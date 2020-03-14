@@ -1,0 +1,315 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coronavirus Information Dashboard</title>
+    <link rel="stylesheet" href="js/foundation.min.css">
+
+    <script src="content/chrts/echarts.min.js"></script>
+    <script src="content/chrts/echarts-gl.min.js"></script>
+    <script src="content/chrts/bmap.min.js"></script>
+
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/topojson.v2.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <!-- Compressed CSS -->
+<style>
+    div.tooltip {
+        position: absolute;
+        text-align: center;
+        text-anchor: middle;
+        /*width: 80px;*/
+        /*height: 36px;*/
+    /*line-height: 36px;*/
+        padding: 2px;
+        font: 12px sans-serif;
+        color: #0a0a0a;
+        background: #fff;
+        border: 0px;
+        pointer-events: none;
+}
+</style>
+</head>
+<body style="height: 100%; margin: 0">
+<h4>Interactive Coronavirus provice level maps. </h4>
+<p>
+    <b>Click on the provinces</b> to see the charts update.
+</p>
+<table border="0">
+    <tr>
+        <td width="50%">
+
+            <select id="select_countries">
+                <option value="japan">Japan</option>
+                <option value="south-korea">South Korea</option>
+                <option value="iran">Iran</option>
+                <option value="italy" >Italy</option>
+                <option value="germany">Germany</option>
+                <option value="china" selected>China</option>
+
+                <!--
+                <option value="france">France</option>
+                 <option value="algeria">Algeria</option>
+
+                 <option value="argentina">Argentina</option>
+                 <option value="azerbaijan">Azerbaijan</option>
+                 <option value="belgium">Belgium</option>
+
+                 <option value="colombia">Colombia</option>
+                 <option value="czech-republic">Czech Republic</option>
+                 <option value="denmark">Denmark</option>
+                 <option value="finland">Finland</option>
+
+                 <option value="india">India</option>
+                 <option value="ireland">Ireland</option>
+
+                 <option value="liberia">Liberia</option>
+                 <option value="nepal">Nepal</option>
+                 <option value="netherlands">Netherlands</option>
+                 <option value="new-zealand">New Zealand</option>
+                 <option value="nigeria">Nigeria</option>
+                 <option value="norway">Norway</option>
+                 <option value="pakistan">Pakistan</option>
+                 <option value="peru">Peru</option>
+                 <option value="philippines">Philippines</option>
+                 <option value="poland">Poland</option>
+                 <option value="portugal">Portugal</option>
+                 <option value="romania">Romania</option>
+                 <option value="south-africa">South Africa</option>
+                 <option value="spain">Spain</option>
+                 <option value="sweden">Sweden</option>
+                 <option value="turkey">Turkey</option>
+                 <option value="united-arab-emirates">United Arab Emirates</option>
+                 <option value="united-kingdom">United Kingdom</option>
+                 <option value="us-states">United states</option>
+                 <option value="venezuela">Venezuela</option>-->
+            </select>
+        </td>
+    </tr>
+    <!----- Map and chart row 1------>
+    <tr>
+        <td width="50%" height="100%">
+
+            <div id="map_container" style="height : 400px; width: 400px">
+            </div>
+
+        </td>
+        <td width="50%">
+            &nbsp;
+            <div id="chart_1_2" style="height : 400px; width: 400px">
+            </div>
+        </td>
+    </tr>
+
+    <!----- Map and chart row 1------>
+    <tr>
+        <td width="50%" height="100%">
+
+            <div id="chart_2_1" style="height : 400px; width: 400px">
+            </div>
+
+        </td>
+        <td width="50%">
+            &nbsp;        <div id="chart_2_2" style="height : 400px; width: 400px">
+        </div>
+        </td>
+    </tr>
+</table>
+
+<script>
+
+
+
+    ////////////dropdown menu change
+    d3.select("#select_countries")
+        .on('change',main);
+
+    function main()
+    {
+        /*all functions*/
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        let data=[];
+        let global_test;
+        let mapCanvas;
+
+        function makePlots (country_name,strCountry="",width=400, height=400)
+        {
+
+            function arrayRemove(arr, value)
+            { return arr.filter(function(ele){ return ele != value; });}
+            function set_echarts_option(canvas_id,objOptionUpdate={yAxis:{type:'log'}})
+            {
+                let theChart = document.getElementById(canvas_id);
+                let existInstance = echarts.getInstanceByDom(theChart);
+                //console.log(existInstance.getOption().legend[0].selected['Toyama'])
+                //console.log(objOptionUpdate);
+                existInstance.setOption(objOptionUpdate)
+
+            }
+            function get_echarts_option(canvas_id,objOptionUpdate={yAxis:{type:'log'}})
+            {
+                let theChart = document.getElementById(canvas_id);
+                let existInstance = echarts.getInstanceByDom(theChart);
+                //console.log(existInstance.getOption().legend[0].selected['Toyama'])
+                //console.log(objOptionUpdate);
+                existInstance.setOption(objOptionUpdate)
+            }
+            function initiate(width=400, height=400)
+            {
+                mapCanvas = d3.select("#map_container")
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
+            }
+            function get_stat_min_max(stat)
+            {
+                let stat_=stat[stat.length-1];
+                let lst_infected=[];
+                for(item in stat_)
+                {
+                    if(item!=='Time'&&item!=='Sum'&&item!=='Total death')
+                    {lst_infected.push(parseFloat(stat_[item]))
+                    }
+                }
+                return [d3.min(lst_infected),d3.max(lst_infected)]
+
+
+
+            }
+
+
+
+            Promise.all([
+                d3.json(strCountry)
+                ,d3.csv("content/stats/"+country_name+".csv")
+            ])
+                .then(ready)
+            /* .then(
+                 function(){
+
+                     let theChart = document.getElementById("chart_1_2");
+                     let existInstance = echarts.getInstanceByDom(theChart);
+                     let zr = existInstance.getZr();
+                     let all_options={}
+                     let currentYaxisType;
+                     zr.on('click', function (params) {
+                         all_options=existInstance.getOption();
+                         global_test=params
+                         let clicked_div=params['event']['path'][2].id
+                         currentYaxisType=all_options.yAxis[0].type;
+                         if(currentYaxisType==="value")
+                             {
+                                 set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'log'}})
+
+                             }
+                         else
+                             {
+                                 set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'value'}})
+                             }
+                     });
+
+                   //  zr.on('mousemove', function (params) {
+                   //      var pointInPixel = [params.offsetX, params.offsetY];
+                   //      zr.setCursorStyle(existInstance.containPixel('grid', pointInPixel) ? 'copy' : 'default');
+                    // });
+                 }
+             )*/
+
+
+
+
+
+            d3.select(self.frameElement).style("height", height + "px");
+        };
+        function cumsum_to_daily(cumsum=[])
+        {
+            res=[];
+            for(let i=1;i<cumsum.length;i++)
+            {
+                res.push(cumsum[i]-cumsum[i-1])
+            }
+            return res;
+        }
+        function get_key_data(global_data,key) {
+            let temp = [];
+            global_data.forEach(function (d) {temp.push(parseFloat(d[key]))});return temp}
+        function get_key_Datetime(global_data,key='Time') {
+            let temp = [];
+            global_data.forEach(function (d) {temp.push(d[key])});return temp}
+        function daily_cases(global_data)
+        {
+            let X = get_key_Datetime(global_data,'Time');
+            let lines = [];
+            let my_provinces = Object.keys(global_data[0]);
+            let item = '';
+            let legends = [];
+            data=get_key_data(global_data,'Sum');
+            data.splice(0, 1);
+            let res=[];
+            for(let i=1;i<data.length;i++){
+                res.push(data[i]-data[i-1])
+            }
+            lines.push({name: 'daily', data: res, type: 'line'});
+
+            return [X,lines,legends]
+        }
+        function daily_cases_by_province(global_data)
+        {
+            let X = get_key_Datetime(global_data,'Time');
+            let lines = [];
+            let my_provinces = Object.keys(global_data[0]);
+            let item = '';
+            let legends = [];
+            let legendselected={};
+            for (let i = 0; i < my_provinces.length; i++) {
+                item = my_provinces[i];
+
+                if (item !== 'Time' && item !== 'Sum' && item !== 'Total death' && item.trim() !== '') {
+                    legends.push(item);
+                    if(i===1)
+                    {
+                        legendselected[item]=true;
+                    }
+                    else
+                    {
+                        legendselected[item]=false;
+                    }
+                    lines.push({name: item, data: cumsum_to_daily(get_key_data(global_data,item)), type: 'line'})}}
+            return [X,lines,legends,legendselected]}
+        function cumulative(global_data) {
+            let X = get_key_Datetime(global_data,'Time');
+            let cumsum = get_key_data(global_data,'Sum');
+            let total_dead=get_key_data(global_data,'Total death');
+            let legends=['Sum','Total death'];
+            let legendselected={'Sum':true,'Total death':true};
+            let lines=[];
+            let item = '';
+            for (let i = 0; i < legends.length; i++) {
+                item = legends[i];
+                lines.push({name: item, data: get_key_data(global_data, item), type: 'line'});
+                lines.push({name: item, data: get_key_data(global_data, item), type: 'bar'});
+            }
+            return [X,lines,legends,legendselected]
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        initiate_map();
+        //makePlots(country_name='china',strCountry="./content/countries/china/topo.json");
+        let country_name=d3.select(this).property('value')
+        let selecteCountry='./content/countries/'+country_name+'/';
+        makePlots(country_name,strCountry=selecteCountry+"/topo.json");
+    }
+    main()
+
+
+</script>
+</body>
+</html>

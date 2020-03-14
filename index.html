@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,22 +14,22 @@
     <script src="https://d3js.org/topojson.v2.min.js"></script>
     <script src="js/jquery.js"></script>
     <!-- Compressed CSS -->
-<style>
-    div.tooltip {
-        position: absolute;
-        text-align: center;
-        text-anchor: middle;
-        /*width: 80px;*/
-        /*height: 36px;*/
-    /*line-height: 36px;*/
-        padding: 2px;
-        font: 12px sans-serif;
-        color: #0a0a0a;
-        background: #fff;
-        border: 0px;
-        pointer-events: none;
-}
-</style>
+    <style>
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            text-anchor: middle;
+            /*width: 80px;*/
+            /*height: 36px;*/
+            /*line-height: 36px;*/
+            padding: 2px;
+            font: 12px sans-serif;
+            color: #0a0a0a;
+            background: #fff;
+            border: 0px;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body style="height: 100%; margin: 0">
 <h4>Interactive Coronavirus provice level maps. </h4>
@@ -173,11 +173,11 @@
     let makePlots=function (country_name,strCountry="",width=400, height=400)
     {
         Promise.all([
-             d3.json(strCountry)
+            d3.json(strCountry)
             ,d3.csv("content/stats/"+country_name+".csv")
         ])
             .then(ready)
-            .then(
+            /*.then(
                 function(){
 
                     let theChart = document.getElementById("chart_1_2");
@@ -195,7 +195,7 @@
                         zr.setCursorStyle(existInstance.containPixel('grid', pointInPixel) ? 'copy' : 'default');
                     });
                 }
-            )
+            )*/
 
 
 
@@ -246,10 +246,10 @@
                             return "#dadada";
                         }
                         else
-                            {
-                                NotFoundCols=arrayRemove(NotFoundCols,d.properties.NAME_1)
+                        {
+                            NotFoundCols=arrayRemove(NotFoundCols,d.properties.NAME_1)
 
-                                return color(parseInt(val))
+                            return color(parseInt(val))
                         }
 
                     }
@@ -274,24 +274,24 @@
                     tooltip.html(d.properties['NAME_1'])
                         .style("left", (d3.event.pageX) + "px")
                         .style("top", (d3.event.pageY - 28) + "px");
-                        //console.log(d.properties['NAME_1'])
+                    //console.log(d.properties['NAME_1'])
                 })
                 .on("mouseout", function(d) {
                     tooltip.transition()
                         .duration(500)
                         .style("opacity", 0);
                 });
-                /*.on("mousemove", function (d) {
-                    let touched_province=d.properties['NAME_1'];
-                    var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"true"}}]}');
-                    set_echarts_option("chart_1_2",opt_update)
-                })
-                .on("mouseout", function (d) {
+            /*.on("mousemove", function (d) {
+                let touched_province=d.properties['NAME_1'];
+                var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"true"}}]}');
+                set_echarts_option("chart_1_2",opt_update)
+            })
+            .on("mouseout", function (d) {
 
-                    let touched_province=d.properties['NAME_1'];
-                    var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"false"}}]}');
-                    set_echarts_option("chart_1_2",opt_update)
-                })*/
+                let touched_province=d.properties['NAME_1'];
+                var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"false"}}]}');
+                set_echarts_option("chart_1_2",opt_update)
+            })*/
 
 
             console.log(provinces);
@@ -338,17 +338,12 @@
 
 
     ///////////// charts using eCharts
-
-
     function get_key_data(global_data,key) {
         let temp = [];
         global_data.forEach(function (d) {temp.push(parseInt(d[key]))});return temp}
-
-
     function get_key_Datetime(global_data,key='Time') {
         let temp = [];
         global_data.forEach(function (d) {temp.push(d[key])});return temp}
-
     function update_all_provinces(global_data)
     {
         let X = get_key_Datetime(global_data,'Time');
@@ -372,8 +367,6 @@
 
                 lines.push({name: item, data: get_key_data(global_data,item), type: 'line'})}}
         return [X,lines,legends,legendselected]}
-
-
     function daily_cases(global_data)
     {
         let X = get_key_Datetime(global_data,'Time');
@@ -386,13 +379,11 @@
         let res=[];
         for(let i=1;i<data.length;i++){
             res.push(data[i]-data[i-1])
-            }
+        }
         lines.push({name: 'daily', data: res, type: 'line'});
 
         return [X,lines,legends]
     }
-
-
     function daily_cases_by_province(global_data)
     {
         let X = get_key_Datetime(global_data,'Time');
@@ -416,8 +407,6 @@
                 }
                 lines.push({name: item, data: cumsum_to_daily(get_key_data(global_data,item)), type: 'line'})}}
         return [X,lines,legends,legendselected]}
-
-
     function cumsum_to_daily(cumsum=[])
     {
         res=[];
@@ -427,9 +416,6 @@
         }
         return res;
     }
-
-
-
     function cumulative(global_data) {
         let X = get_key_Datetime(global_data,'Time');
         let cumsum = get_key_data(global_data,'Sum');
@@ -445,7 +431,6 @@
         }
         return [X,lines,legends,legendselected]
     }
-
     function plot(div,X,lines,legends,legendselected=[],title='',subtext='',orientation_from_left='center')
     {
         let dom = document.getElementById(div);
