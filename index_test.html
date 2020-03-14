@@ -144,29 +144,30 @@
 
     let all_options={};
     let currentYaxisType;
-    let zr = myChart_1_2.getZr();
 
+    function bind_Click(chart)
+    {
+    let zr = chart.getZr();
     zr.on('click', function (params) {
-
-        all_options=myChart_1_2.getOption();
-
+        all_options=chart.getOption();
         let clicked_div=params['event']['path'][2].id;
-
         currentYaxisType=all_options.yAxis[0].type;
         if(currentYaxisType==="value")
         {
-            myChart_1_2.setOption({yAxis:{type:'log'}})
+            chart.setOption({yAxis:{type:'log',min:1}})
             //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'log'}})
         }
         else
         {
-            myChart_1_2.setOption({yAxis:{type:'value'}})
+            chart.setOption({yAxis:{type:'value'}})
             //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'value'}})
         }
-
     });
-
-
+    }
+    
+    bind_Click(myChart_1_2)
+    bind_Click(myChart_2_1)
+    bind_Click(myChart_2_2)
 
     ////////////////////////////////////////
     /////// secondary functions/////////
