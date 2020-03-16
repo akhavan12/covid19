@@ -194,23 +194,23 @@
         let zr = chart.getZr();
 
         //zr.on('click', function (params) {
-        all_options=chart.getOption();
-        let clicked_div=params['event']['path'][2].id;
-        currentYaxisType=all_options.yAxis[0].type;
-        if(currentYaxisType==="value")
-        {
-            chart.setOption({yAxis:{type:'log',min:1}})
-            //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'log'}})
-        }
-        else
-        {
-            chart.setOption({yAxis:{type:'value'}})
-            //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'value'}})
+           all_options=chart.getOption();
+            let clicked_div=params['event']['path'][2].id;
+            currentYaxisType=all_options.yAxis[0].type;
+            if(currentYaxisType==="value")
+            {
+                chart.setOption({yAxis:{type:'log',min:1}})
+                //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'log'}})
+            }
+            else
+            {
+                chart.setOption({yAxis:{type:'value'}})
+                //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'value'}})
 
         }
 
 
-        //);}
+    //);}
     }
 
     //bind_Click(myChart_1_2)
@@ -506,54 +506,50 @@
             }
             return [X,lines,legends,legendselected]
         }
-        function plot(myChart,X,lines,legends,legendselected=[],title='',subtext='',orientation_from_left='center',info="",on_off=true)
+        function plot(myChart,X,lines,legends,legendselected=[],title='',subtext='',orientation_from_left='center',info="")
         {
             //console.log("function plot: "+div +',', title,subtext,info)
 
 
             let app = {};
             option = {
+
                 grid: {
                     height: '75%',
                     width: '65%',
                     top: '10%',
                 },
                 graphic:
-                    [{
-                        type: 'text',
-                        style: {
-                            text: 'linear',
-                            font: '14px Microsoft YaHei',
-                            fill:"blue",
-                            x: 4,
-                            y: 0
-                        },
-                        onclick: onClick,
-                    }
-                        , {
-                        type: 'text',
-                        style: {
-                            text: 'Enable all legends',
-                            font: '14px Microsoft YaHei',
-                            fill:"blue",
-                            x: 300,
-                            y: 0
-                        },
-                        onclick: turn_on_all_legends,
+                    [
+
+                        {type: 'rect',
+                            shape: {
+                               x: 0,
+                              y: 0,
+                              height: 20,
+                        width: 50
                     },
-                        {
-                            type: 'text',
-                            style: {
-                                text: 'Disable all legends',
-                                font: '14px Microsoft YaHei',
-                                fill:"blue",
-                                x: 300,
-                                y: 20
-                            },
-                            onclick: turn_off_all_legends,
-                        },
-                    ]
-                ,
+                    style: {
+                        fill:'none',
+                        stroke:'black'
+                        // Here are configurations for style of the element, like `fill`, `stroke`,
+                        // `lineWidth`, `shadowBlur`, ...
+                    },
+                    onclick: onClick,
+                    invisible: false,
+                    z: 100},
+                    {
+                      type: 'text',
+                      style: {
+                          text: 'linear',
+                          x: 4,
+                          y: 0
+                      },
+                      onclick: onClick,
+                    }
+                    ],
+
+
                 title: {
 
                     text: title,
@@ -565,6 +561,7 @@
                         fontWeight:200,
                         color : 'black'
                     }
+
                 },
                 legend: {
                     data: legends,
@@ -574,7 +571,7 @@
                     //right : '100',
                     type: 'scroll',
                     orient: 'vertical',
-                    left:'80%',
+                    left:'85%',
                     zlevel:100,
                 },
                 tooltip: {
@@ -691,12 +688,9 @@
                     //  min: 0,
                     //  max: 1,
                     calculable: true,
-                    splitNumber: 5,
+                    splitNumber: 3,
                     inRange: {
-                        color: ['#1dcc6b',
-                            "#ff8e18",
-                            '#8d5032',
-                            '#ff0000']
+                        color: ['green','yellow','orange','brown', 'red']
                     },
                     left:'90%'
                     ,top:'10%'
@@ -749,17 +743,19 @@
 
 
 
-    function onClick(){
+    function onClick(d){
 
         let clicked_chart=this.parent.__zr.dom.id;
-        function modify_scale_chart_scale(chart)
-        {
+        let chart=myChart_1_2;
+        console.log(this.style.text);
+
+        if (clicked_chart==="chart_1_2"){
             all_options=chart.getOption();
             currentYaxisType=all_options.yAxis[0].type;
             if(currentYaxisType==="value")
             {
                 chart.setOption({yAxis:{type:'log',min:1}})
-                chart.setOption({graphic:{style:{text:'log   '}}})
+                chart.setOption({graphic:[{},{style:{text:'log'}}]})
             }
             else
             {
@@ -767,71 +763,17 @@
                 chart.setOption({graphic:{style:{text:'linear'}}})
             }
 
+
+
         }
-        if (clicked_chart==="chart_1_2"){
-            modify_scale_chart_scale(myChart_1_2)
-        }
-        if (clicked_chart==="chart_2_2"){
-            modify_scale_chart_scale(myChart_2_2)
-        }
-        if (clicked_chart==="chart_2_1"){
-            modify_scale_chart_scale(myChart_2_1)
-        }
+
+
+
+
+
+
     }
 
-
-    function turn_on_all_legends()
-    {
-        let clicked_chart=this.parent.__zr.dom.id;
-        function enable_disable_legend(chart)
-        {
-            all_options=chart.getOption();
-            let selections=all_options['legend'][0]["data"];
-            let selected_object={}
-            for(let i=0;i<selections.length;i++)
-            {
-                selected_object[selections[i]]=true
-            }
-            chart.setOption({legend:[{selected:selected_object}]})
-            console.log(all_options['legend'][0])
-        }
-        if (clicked_chart==="chart_1_2"){
-            enable_disable_legend(myChart_1_2)
-        }
-        if (clicked_chart==="chart_2_2"){
-            enable_disable_legend(myChart_2_2)
-        }
-        if (clicked_chart==="chart_2_1"){
-            enable_disable_legend(myChart_2_1)
-        }
-    }
-
-
-    function turn_off_all_legends()
-    {
-        let clicked_chart=this.parent.__zr.dom.id;
-        function enable_disable_legend(chart)
-        {
-            all_options=chart.getOption();
-            let selections=all_options['legend'][0]["data"];
-            let selected_object={}
-            for(let i=0;i<selections.length;i++)
-            {
-                selected_object[selections[i]]=false
-            }
-            chart.setOption({legend:[{selected:selected_object}]})
-            console.log(all_options['legend'][0])
-        }
-        if (clicked_chart==="chart_1_2"){
-            enable_disable_legend(myChart_1_2)
-        }
-        if (clicked_chart==="chart_2_2"){
-            enable_disable_legend(myChart_2_2)
-        }
-        if (clicked_chart==="chart_2_1"){
-            enable_disable_legend(myChart_2_1)
-        }
-    }
 </script>
 
 

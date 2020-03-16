@@ -113,12 +113,12 @@
     <tr>
         <td width="50%" height="100%">
 
-            <div id="chart_2_1" style="height : 400px; width: 400px">
+            <div id="chart_2_1" style="height : 400px; width: 600px">
             </div>
 
         </td>
         <td width="50%">
-            &nbsp;        <div id="chart_2_2" style="height : 400px; width: 400px">
+            &nbsp;        <div id="chart_2_2" style="height : 400px; width: 600px">
         </div>
         </td>
     </tr>
@@ -192,8 +192,9 @@
     function bind_Click(chart)
     {
         let zr = chart.getZr();
-        zr.on('click', function (params) {
-            all_options=chart.getOption();
+
+        //zr.on('click', function (params) {
+           all_options=chart.getOption();
             let clicked_div=params['event']['path'][2].id;
             currentYaxisType=all_options.yAxis[0].type;
             if(currentYaxisType==="value")
@@ -205,13 +206,16 @@
             {
                 chart.setOption({yAxis:{type:'value'}})
                 //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'value'}})
-            }
-        });
+
+        }
+
+
+    //);}
     }
 
-   // bind_Click(myChart_1_2)
-    bind_Click(myChart_2_1)
-    bind_Click(myChart_2_2)
+    //bind_Click(myChart_1_2)
+    //bind_Click(myChart_2_1)
+    //bind_Click(myChart_2_2)
 
     ////////////////////////////////////////
     /////// secondary functions/////////
@@ -401,9 +405,9 @@
 
 
             let prov_data=update_all_provinces(country[1]);
-            plot(myChart_1_2,prov_data[0],prov_data[1],prov_data[2],prov_data[3],'All Provinces/States',"",country_name);
+            plot(myChart_1_2,prov_data[0],prov_data[1],prov_data[2],prov_data[3],'All Provinces/States',"sub","center","",country_name);
             let sums=cumulative(country[1]);
-            plot(myChart_2_1,sums[0],sums[1],sums[2],sums[3],'Total Confirmed and Death',"",country_name);
+            plot(myChart_2_1,sums[0],sums[1],sums[2],sums[3],'Total Confirmed and Death',"sub","center",country_name);
             //let dayCases=daily_cases(country[1]);
             let dayCases = daily_cases_by_province(country[1]);
             plot(myChart_2_2,dayCases[0],dayCases[1],dayCases[2],dayCases[3],'Number of Daily New Cases',"sub","center",country_name)
@@ -502,51 +506,54 @@
             }
             return [X,lines,legends,legendselected]
         }
-        function plot(myChart,X,lines,legends,legendselected=[],title='',subtext='',orientation_from_left='center',info="")
+        function plot(myChart,X,lines,legends,legendselected=[],title='',subtext='',orientation_from_left='center',info="",on_off=true)
         {
             //console.log("function plot: "+div +',', title,subtext,info)
 
 
             let app = {};
             option = {
-
                 grid: {
                     height: '75%',
                     width: '65%',
                     top: '10%',
                 },
                 graphic:
-                    [
-
-                        {type: 'rect',
-                            shape: {
-                               x: 0,
-                              y: 0,
-                              height: 20,
-                        width: 50
+                    [{
+                      type: 'text',
+                      style: {
+                          text: 'linear',
+                          font: '14px Microsoft YaHei',
+                          fill:"blue",
+                          x: 4,
+                          y: 0
+                      },
+                      onclick: onClick,
+                    }
+                    , {
+                        type: 'text',
+                        style: {
+                                text: 'Enable all legends',
+                                font: '14px Microsoft YaHei',
+                                fill:"blue",
+                            x: 300,
+                            y: 0
+                        },
+                        onclick: turn_on_all_legends,
                     },
-                    style: {
-                        fill:'none',
-                        stroke:'black'
-                        // Here are configurations for style of the element, like `fill`, `stroke`,
-                        // `lineWidth`, `shadowBlur`, ...
+                    {
+                        type: 'text',
+                        style: {
+                                text: 'Disable all legends',
+                                font: '14px Microsoft YaHei',
+                                fill:"blue",
+                            x: 300,
+                            y: 20
+                        },
+                        onclick: turn_off_all_legends,
                     },
-                    text:"Log",
-                    onclick: onClick,
-                    invisible: false,
-                    z: 100},
-                        {
-                            type: 'text',
-                            style: {
-                                text: 'Linear',
-                                x: 4,
-                                y: 0
-                            },
-                            onclick: onClick,
-                        }
-                    ],
-
-
+                    ]
+                    ,
                 title: {
 
                     text: title,
@@ -558,7 +565,6 @@
                         fontWeight:200,
                         color : 'black'
                     }
-
                 },
                 legend: {
                     data: legends,
@@ -568,7 +574,7 @@
                     //right : '100',
                     type: 'scroll',
                     orient: 'vertical',
-                    left:'85%',
+                    left:'80%',
                     zlevel:100,
                 },
                 tooltip: {
@@ -611,7 +617,6 @@
             };
             if (option && typeof option === "object") {
                 myChart.setOption(option, true);
-                //event_listener(myChart,info)
             }
         }
 
@@ -649,6 +654,7 @@
                 },
                 animation: true,
                 grid: {
+                    left:"10%",
                     height: '80%',
                     top: '10%'
                 },
@@ -685,9 +691,12 @@
                     //  min: 0,
                     //  max: 1,
                     calculable: true,
-                    splitNumber: 3,
+                    splitNumber: 5,
                     inRange: {
-                        color: ['green','yellow','orange','brown', 'red']
+                        color: ['#1dcc6b',
+                            "#ff8e18",
+                            '#8d5032',
+                            '#ff0000']
                     },
                     left:'90%'
                     ,top:'10%'
@@ -740,45 +749,89 @@
 
 
 
-    function onClick(d){
+    function onClick(){
 
-        console.log(d)
-    }
-
-
-    function event_listener(theChart,info)
-    {
-        console.log("function event_listener : ",info);
-        /////////// click event listener
-        let all_options={};
-        let currentYaxisType;
-        let zr = theChart.getZr();
-        zr.on('click', function (params) {
-            var pointInPixel = [params.offsetX, params.offsetY];
-            console.log(params.offsetX)
-            //zr.setCursorStyle(existInstance.containPixel('grid', pointInPixel) ? 'copy' : 'default');
-
-            console.log('Clicked,'+","+info);
-            all_options=theChart.getOption();
-            global_test=params;
-            let clicked_div=params['event']['path'][2].id;
+        let clicked_chart=this.parent.__zr.dom.id;
+        function modify_scale_chart_scale(chart)
+        {
+            all_options=chart.getOption();
             currentYaxisType=all_options.yAxis[0].type;
             if(currentYaxisType==="value")
             {
-                set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'log'}})
+                chart.setOption({yAxis:{type:'log',min:1}})
+                chart.setOption({graphic:{style:{text:'log   '}}})
             }
             else
             {
-                set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'value'}})
+                chart.setOption({yAxis:{type:'value'}})
+                chart.setOption({graphic:{style:{text:'linear'}}})
             }
 
-        });
-        /* zr.on('mousemove', function (params) {
-             var pointInPixel = [params.offsetX, params.offsetY];
-             zr.setCursorStyle(existInstance.containPixel('grid', pointInPixel) ? 'copy' : 'default');
-         });*/
+        }
+        if (clicked_chart==="chart_1_2"){
+            modify_scale_chart_scale(myChart_1_2)
+        }
+        if (clicked_chart==="chart_2_2"){
+            modify_scale_chart_scale(myChart_2_2)
+        }
+        if (clicked_chart==="chart_2_1"){
+            modify_scale_chart_scale(myChart_2_1)
+        }
     }
 
+
+    function turn_on_all_legends()
+    {
+        let clicked_chart=this.parent.__zr.dom.id;
+        function enable_disable_legend(chart)
+        {
+            all_options=chart.getOption();
+            let selections=all_options['legend'][0]["data"];
+            let selected_object={}
+            for(let i=0;i<selections.length;i++)
+            {
+                selected_object[selections[i]]=true
+            }
+            chart.setOption({legend:[{selected:selected_object}]})
+            console.log(all_options['legend'][0])
+        }
+        if (clicked_chart==="chart_1_2"){
+            enable_disable_legend(myChart_1_2)
+        }
+        if (clicked_chart==="chart_2_2"){
+            enable_disable_legend(myChart_2_2)
+        }
+        if (clicked_chart==="chart_2_1"){
+            enable_disable_legend(myChart_2_1)
+        }
+    }
+
+
+    function turn_off_all_legends()
+    {
+        let clicked_chart=this.parent.__zr.dom.id;
+        function enable_disable_legend(chart)
+        {
+            all_options=chart.getOption();
+            let selections=all_options['legend'][0]["data"];
+            let selected_object={}
+            for(let i=0;i<selections.length;i++)
+            {
+                selected_object[selections[i]]=false
+            }
+            chart.setOption({legend:[{selected:selected_object}]})
+            console.log(all_options['legend'][0])
+        }
+        if (clicked_chart==="chart_1_2"){
+            enable_disable_legend(myChart_1_2)
+        }
+        if (clicked_chart==="chart_2_2"){
+            enable_disable_legend(myChart_2_2)
+        }
+        if (clicked_chart==="chart_2_1"){
+            enable_disable_legend(myChart_2_1)
+        }
+    }
 </script>
 
 
