@@ -1,9 +1,9 @@
 <html>
 
 <head>
-<title>
-    Coronavirus Spread in Each Country
-</title>
+    <title>
+        Coronavirus Spread in Each Country
+    </title>
 
 
     <link rel="stylesheet" href="js/foundation.min.css">
@@ -104,7 +104,7 @@
         </td>
         <td width="50%">
             &nbsp;
-            <div id="chart_1_2" style="height : 400px; width: 400px">
+            <div id="chart_1_2" style="height : 400px; width: 600px">
             </div>
         </td>
     </tr>
@@ -147,7 +147,22 @@
         global_data.forEach(function (d) {temp.push(parseInt(d[key]))});return temp}
     function get_key_Datetime(global_data,key='Time') {
         let temp = [];
-        global_data.forEach(function (d) {temp.push(d[key])});return temp}
+
+        if(key="Time")
+        {
+            //global_data.forEach(function (d) {temp.push(
+            //echarts.format.formatTime('yyyy-MM-dd', d[key])
+            //)});
+            global_data.forEach(function (d) {temp.push(d[key])});
+        }
+        else
+        {
+            global_data.forEach(function (d) {temp.push(d[key])});
+        }
+
+
+
+        return temp}
 
 
 
@@ -176,25 +191,25 @@
 
     function bind_Click(chart)
     {
-    let zr = chart.getZr();
-    zr.on('click', function (params) {
-        all_options=chart.getOption();
-        let clicked_div=params['event']['path'][2].id;
-        currentYaxisType=all_options.yAxis[0].type;
-        if(currentYaxisType==="value")
-        {
-            chart.setOption({yAxis:{type:'log',min:1}})
-            //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'log'}})
-        }
-        else
-        {
-            chart.setOption({yAxis:{type:'value'}})
-            //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'value'}})
-        }
-    });
+        let zr = chart.getZr();
+        zr.on('click', function (params) {
+            all_options=chart.getOption();
+            let clicked_div=params['event']['path'][2].id;
+            currentYaxisType=all_options.yAxis[0].type;
+            if(currentYaxisType==="value")
+            {
+                chart.setOption({yAxis:{type:'log',min:1}})
+                //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'log'}})
+            }
+            else
+            {
+                chart.setOption({yAxis:{type:'value'}})
+                //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'value'}})
+            }
+        });
     }
 
-    bind_Click(myChart_1_2)
+   // bind_Click(myChart_1_2)
     bind_Click(myChart_2_1)
     bind_Click(myChart_2_2)
 
@@ -223,17 +238,17 @@
         let theChart = document.getElementById(canvas_id);
         let existInstance = echarts.getInstanceByDom(theChart);
         //console.log(existInstance.getOption().legend[0].selected['Toyama'])
-        console.log(objOptionUpdate);
+        //console.log(objOptionUpdate);
         existInstance.setOption(objOptionUpdate)
     }
 
 
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
     //// main function is makePlots
     let makePlots=function (country_name,strCountry="",width=400, height=400)
     {
-        console.log("function makePlots");
+        //console.log("function makePlots");
 
 
         ////////////////////////////////////////////////////////////////////
@@ -246,156 +261,156 @@
 
 
 
-    ///// first thing is the map
-    //// initiate map function makes the map holder ready
-    function initiate_map_canvas(width=400, height=400)
-    {
-        console.log('function initiate_map_canvas')
-        $("#map_container").empty()
-        //$("#chart_1_2").empty()
-        //$("#chart_2_1").empty()
-        //$("#chart_2_2").empty()
-        mapCanvas = d3.select("#map_container")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height);
+        ///// first thing is the map
+        //// initiate map function makes the map holder ready
+        function initiate_map_canvas(width=400, height=400)
+        {
+            console.log('function initiate_map_canvas')
+            $("#map_container").empty()
+            //$("#chart_1_2").empty()
+            //$("#chart_2_1").empty()
+            //$("#chart_2_2").empty()
+            mapCanvas = d3.select("#map_container")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
 
 
 
-    }
-    function ready(country) {
+        }
+        function ready(country) {
 
 
 
 
-        initiate_map_canvas()
-        console.log("function ready")
-        let map_data=country[0];
-        let stat=country[1];
+            initiate_map_canvas()
+            console.log("function ready")
+            let map_data=country[0];
+            let stat=country[1];
 
-        heatmap(stat)
+            heatmap(stat)
 
-        let feat_data=topojson.feature(map_data, map_data.objects[Object.keys(map_data.objects)[0]]);
-        let center = d3.geoCentroid(country);
-        let projection = d3.geoMercator()
-            .fitExtent([[0 , 0 ], [400,400]  ],feat_data);
-        let path = d3.geoPath()
-            .projection(projection);
-        let minmax=get_stat_min_max(country[1])
-        let color = d3.scaleLog()
-            .domain([.1,minmax[1]])
-            .range(['#cbbbbb',
-                '#5b000e'])
-            .interpolate(d3.interpolateHcl);
+            let feat_data=topojson.feature(map_data, map_data.objects[Object.keys(map_data.objects)[0]]);
+            let center = d3.geoCentroid(country);
+            let projection = d3.geoMercator()
+                .fitExtent([[0 , 0 ], [400,400]  ],feat_data);
+            let path = d3.geoPath()
+                .projection(projection);
+            let minmax=get_stat_min_max(country[1])
+            let color = d3.scaleLog()
+                .domain([.1,minmax[1]])
+                .range(['#cbbbbb',
+                    '#5b000e'])
+                .interpolate(d3.interpolateHcl);
 
-        // province name tooltip
+            // province name tooltip
 
-        let tooltip = d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
+            let tooltip = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
 
-        let allCols=Object.keys(stat[0]);
-        let NotFoundCols=Object.keys(stat[0]);
-        let provinces=[];
-        mapCanvas.selectAll("path")
-        mapCanvas.append("g")
-            .attr("class", "counties")
-            .selectAll("path")
-            .data(topojson.feature(map_data, map_data.objects[Object.keys(map_data.objects)[0]]).features)
-            .enter().append("path")
-            .attr("fill", function(d) {
-                provinces.push(d.properties.NAME_1)
-                if(stat.length>0)
-                {
-                    //console.log(d.properties.NAME_1)
-                    let val=stat[stat.length - 1][d.properties.NAME_1]
-                    if (val===undefined)
+            let allCols=Object.keys(stat[0]);
+            let NotFoundCols=Object.keys(stat[0]);
+            let provinces=[];
+            mapCanvas.selectAll("path")
+            mapCanvas.append("g")
+                .attr("class", "counties")
+                .selectAll("path")
+                .data(topojson.feature(map_data, map_data.objects[Object.keys(map_data.objects)[0]]).features)
+                .enter().append("path")
+                .attr("fill", function(d) {
+                    provinces.push(d.properties.NAME_1)
+                    if(stat.length>0)
                     {
-                        //report umached province
                         //console.log(d.properties.NAME_1)
-                        //MatchedColumns.push(d.properties.NAME_1)
-                        //NotFoundCols.push(d.properties.NAME_1)
-                        return "#dadada";
+                        let val=stat[stat.length - 1][d.properties.NAME_1]
+                        if (val===undefined)
+                        {
+                            //report umached province
+                            //console.log(d.properties.NAME_1)
+                            //MatchedColumns.push(d.properties.NAME_1)
+                            //NotFoundCols.push(d.properties.NAME_1)
+                            return "#dadada";
+                        }
+                        else
+                        {
+                            NotFoundCols=arrayRemove(NotFoundCols,d.properties.NAME_1)
+
+                            return color(parseFloat(val)+.1)
+                        }
                     }
                     else
                     {
-                        NotFoundCols=arrayRemove(NotFoundCols,d.properties.NAME_1)
-
-                        return color(parseFloat(val)+.1)
+                        return 'white'
                     }
-                }
-                else
-                {
-                    return 'white'
-                }
 
-            })
-            .style("stroke-width", ".3")
-            .attr("d", path)
-            .on("click", function (d) {
+                })
+                .style("stroke-width", ".3")
+                .attr("d", path)
+                .on("click", function (d) {
+                    let touched_province=d.properties['NAME_1'];
+                    let opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"true"}}]}');
+                    set_echarts_option("chart_1_2",opt_update)
+                    set_echarts_option("chart_2_2",opt_update)
+                })
+                .on("mouseover",(d)=>{
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tooltip.html(d.properties['NAME_1'])
+                        .style("left", (d3.event.pageX) + "px")
+                        .style("top", (d3.event.pageY - 28) + "px");
+                    //console.log(d.properties['NAME_1'])
+                })
+                .on("mouseout", function(d) {
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                });
+            /*.on("mousemove", function (d) {
                 let touched_province=d.properties['NAME_1'];
-                let opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"true"}}]}');
+                var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"true"}}]}');
                 set_echarts_option("chart_1_2",opt_update)
-                set_echarts_option("chart_2_2",opt_update)
             })
-            .on("mouseover",(d)=>{
-                tooltip.transition()
-                    .duration(200)
-                    .style("opacity", .9);
-                tooltip.html(d.properties['NAME_1'])
-                    .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY - 28) + "px");
-                //console.log(d.properties['NAME_1'])
-            })
-            .on("mouseout", function(d) {
-                tooltip.transition()
-                    .duration(500)
-                    .style("opacity", 0);
-            });
-        /*.on("mousemove", function (d) {
-            let touched_province=d.properties['NAME_1'];
-            var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"true"}}]}');
-            set_echarts_option("chart_1_2",opt_update)
-        })
-        .on("mouseout", function (d) {
+            .on("mouseout", function (d) {
 
-            let touched_province=d.properties['NAME_1'];
-            var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"false"}}]}');
-            set_echarts_option("chart_1_2",opt_update)
-        })*/
+                let touched_province=d.properties['NAME_1'];
+                var opt_update = JSON.parse('{"legend":[{"selected": {"'+touched_province+'":"false"}}]}');
+                set_echarts_option("chart_1_2",opt_update)
+            })*/
 
-        ////////// data collection helper
-        ///////// allow us detect which of the elements in the database did not match with the map
+            ////////// data collection helper
+            ///////// allow us detect which of the elements in the database did not match with the map
 
-        //console.log(provinces);
-        //console.log("\n");
-        //console.log(NotFoundCols);
+            //console.log(provinces);
+            //console.log("\n");
+            //console.log(NotFoundCols);
 
 
 
-        mapCanvas
-            .insert("path")
-            .datum(feat_data)
-            .attr("d", path)
-            .attr('fill','none')
-            .style("stroke", "#fafafa")
-            .style("stroke-width", ".5");
-        //////////////////////load charts
+            mapCanvas
+                .insert("path")
+                .datum(feat_data)
+                .attr("d", path)
+                .attr('fill','none')
+                .style("stroke", "#fafafa")
+                .style("stroke-width", ".5");
+            //////////////////////load charts
 
-        console.log("country_name=",country_name)
-
-
-        let prov_data=update_all_provinces(country[1]);
-        plot(myChart_1_2,prov_data[0],prov_data[1],prov_data[2],prov_data[3],'All Provinces/States',"",country_name);
-        let sums=cumulative(country[1]);
-        plot(myChart_2_1,sums[0],sums[1],sums[2],sums[3],'Total Confirmed and Death',"",country_name);
-        //let dayCases=daily_cases(country[1]);
-        let dayCases = daily_cases_by_province(country[1]);
-        plot(myChart_2_2,dayCases[0],dayCases[1],dayCases[2],dayCases[3],'Number of Daily New Cases',"sub","center",country_name)
+            console.log("country_name=",country_name)
 
 
-    }
-    ///////////initiate the map canvas///////////////////
+            let prov_data=update_all_provinces(country[1]);
+            plot(myChart_1_2,prov_data[0],prov_data[1],prov_data[2],prov_data[3],'All Provinces/States',"",country_name);
+            let sums=cumulative(country[1]);
+            plot(myChart_2_1,sums[0],sums[1],sums[2],sums[3],'Total Confirmed and Death',"",country_name);
+            //let dayCases=daily_cases(country[1]);
+            let dayCases = daily_cases_by_province(country[1]);
+            plot(myChart_2_2,dayCases[0],dayCases[1],dayCases[2],dayCases[3],'Number of Daily New Cases',"sub","center",country_name)
+
+
+        }
+        ///////////initiate the map canvas///////////////////
 
 
         ///////////// charts using eCharts
@@ -494,6 +509,44 @@
 
             let app = {};
             option = {
+
+                grid: {
+                    height: '75%',
+                    width: '65%',
+                    top: '10%',
+                },
+                graphic:
+                    [
+
+                        {type: 'rect',
+                            shape: {
+                               x: 0,
+                              y: 0,
+                              height: 20,
+                        width: 50
+                    },
+                    style: {
+                        fill:'none',
+                        stroke:'black'
+                        // Here are configurations for style of the element, like `fill`, `stroke`,
+                        // `lineWidth`, `shadowBlur`, ...
+                    },
+                    text:"Log",
+                    onclick: onClick,
+                    invisible: false,
+                    z: 100},
+                        {
+                            type: 'text',
+                            style: {
+                                text: 'Linear',
+                                x: 4,
+                                y: 0
+                            },
+                            onclick: onClick,
+                        }
+                    ],
+
+
                 title: {
 
                     text: title,
@@ -508,17 +561,15 @@
 
                 },
                 legend: {
-
-
                     data: legends,
                     selected:legendselected,
                     //orient : 'vertical',
                     //align : 'right',
                     //right : '100',
                     type: 'scroll',
-                    orient: 'horizontal'
-
-
+                    orient: 'vertical',
+                    left:'85%',
+                    zlevel:100,
                 },
                 tooltip: {
                     trigger: 'axis'
@@ -527,12 +578,10 @@
                     type: 'category',
                     data: X
                 },
-
                 yAxis: {
 
                     type: 'value',
                     triggerEvent: true,
-
                 },
                 series: lines,
                 dataZoom: [
@@ -541,14 +590,12 @@
                         xAxisIndex: 0,
                         filterMode: 'empty',
                         show:false,
-
-
                     },
-                    {
+                    /*{
                         type: 'slider',
                         yAxisIndex: 0,
                         filterMode: 'empty'
-                    },
+                    },*/
                     {
                         type: 'inside',
                         xAxisIndex: 0,
@@ -570,131 +617,114 @@
 
 
         function heatmap(hData){
-        let app = {};
-        option = null;
-        console.log(hData);
-        //let provinces =Object.keys(hData[0]);;
-            //
-        let provinces=[];
-        let dates =  get_key_Datetime(hData,'Time');
-        global_test=hData;
-
+            let app = {};
+            option = null;
+            let dates =  get_key_Datetime(hData,'Time');
             let myArr=[];
-            let temp=[];
             let j;
 
-            for(let i=1;i<global_test.length;i++)
+            for(let i=1;i<hData.length;i++)
             {
-            j=0;
-                for(item in global_test[i]){
+                j=0;
+                for(item in hData[i]){
                     if(item !== 'Time' && item !== 'Sum' && item !== 'Total death' && item.trim() !== '')
                     {
-                        //temp.push(parseInt(global_test[i][item]))
-                        if(i===0){provinces.push(item)}
-                        myArr.push([j,i,parseInt(global_test[i][item]-global_test[i-1][item])])
+                        myArr.push([j,i,parseInt(hData[i][item]-hData[i-1][item])])
                         j++;
                     }
 
                 }
             }
-            console.log(myArr)
-          //  console.log(provinces)
-          //  console.log(dates)
-
-/////////////////////
-            ///////////
-            //////////////////////
-            /////////////
-            let X = get_key_Datetime(hData,'Time');
+            let C = get_key_Datetime(hData,'Time');
             let lines = [];
             let my_provinces = Object.keys(hData[0]);
+            my_provinces.shift()
+            my_provinces .splice(-2,2)
+            //console.log(myArr)
+            //console.log(my_provinces)
 
-
-            for (let i = 0; i < my_provinces.length; i++) {
-                item = my_provinces[i];
-                j=0;
-                if (item !== 'Time' && item !== 'Sum' && item !== 'Total death' && item.trim() !== '')
-                {
-                    //lines.push([i,j,cumsum_to_daily(get_key_data(hData,item))])
-                    ///console.log(cumsum_to_daily(get_key_data(hData,item)))
-                    j++
-                }
-            }
-            //console.log(lines)
-
-            console.log(my_provinces)
-
-
-//////////////////
-        ///////////
-        ///////////////
-
-
-
-        option = {
-            tooltip: {
-                position: 'top'
-
-            },
-            animation: true,
-            grid: {
-                height: '80%',
-                top: '10%'
-            },
-            xAxis: {
-                type: 'category',
-                data:my_provinces ,
-                splitArea: {
-                    show: true
-                }
-            },
-            yAxis: {
-                type: 'category',
-                data: dates,
-                splitArea: {
-                    show: true
-                }
-            },
-            /*visualMap: {
-                calculable: true,
-                orient: 'horizontal',
-                left: 'center',
-                bottom: '15%',
-                show: false
-
-            },*/
-            visualMap: {
-                // type: 'piecewise',
-              //  min: 0,
-              //  max: 1,
-                calculable: true,
-                splitNumber: 5,
-                inRange: {
-                    color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
-                }
-            },
-
-            series: [{
-                name: 'Confirmed Cases',
-                type: 'heatmap',
-                data: myArr, //myArr,
-                label: {
-                    show: true
+            option = {
+                tooltip: {
+                    position: 'top'
                 },
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                animation: true,
+                grid: {
+                    height: '80%',
+                    top: '10%'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: my_provinces ,
+                    splitArea: {
+                        show: false
                     }
-                }
-            }]
-        };
-        if (option && typeof option === "object") {
-            myChart.setOption(option, true);
-        }
+                },
+                yAxis: {
+                    type: 'category',
+                    data:C,
+                    splitArea: {
+                        show: true
+                    }
+                },
+                /* visualMap: {
+                     //type: 'piecewise',
+                     type: 'continuous',
+                     //  min: 0,
+                     //  max: 1,
+                     calculable: true,
+                     splitNumber: 10,
+                     inRange: {
+                         color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+                     },
+                     left:'90%'
+                     ,top:'10%'
+                 },      */
+                visualMap: {
+                    //type: 'piecewise',
+                    type: 'continuous',
+                    //  min: 0,
+                    //  max: 1,
+                    calculable: true,
+                    splitNumber: 3,
+                    inRange: {
+                        color: ['green','yellow','orange','brown', 'red']
+                    },
+                    left:'90%'
+                    ,top:'10%'
+                },
+
+                series: [{
+                    name: 'Confirmed Cases',
+                    type: 'heatmap',
+                    data: myArr,
+                    label: {
+                        //color:function(myArr){
+                        //    console.log(1);
+                        //    return 'rgba(0, 0, 0, 0.5)'
+                        //},
+
+                        show: function(d){
+                            console.log(myArr)
+                            return true}
+
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowColor: function(d){
+                                //console.log(d)
+                                return 'rgba(0, 0, 0, 0.5)'}
+
+                        }
+                    }
+                }]
+            };
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
         }
 
-    d3.select(self.frameElement).style("height", height + "px");
+        d3.select(self.frameElement).style("height", height + "px");
     };
 
 
@@ -710,16 +740,24 @@
 
 
 
+    function onClick(d){
+
+        console.log(d)
+    }
+
+
     function event_listener(theChart,info)
     {
         console.log("function event_listener : ",info);
         /////////// click event listener
-
-
         let all_options={};
         let currentYaxisType;
         let zr = theChart.getZr();
         zr.on('click', function (params) {
+            var pointInPixel = [params.offsetX, params.offsetY];
+            console.log(params.offsetX)
+            //zr.setCursorStyle(existInstance.containPixel('grid', pointInPixel) ? 'copy' : 'default');
+
             console.log('Clicked,'+","+info);
             all_options=theChart.getOption();
             global_test=params;
@@ -728,7 +766,6 @@
             if(currentYaxisType==="value")
             {
                 set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'log'}})
-
             }
             else
             {
@@ -736,10 +773,10 @@
             }
 
         });
-       /* zr.on('mousemove', function (params) {
-            var pointInPixel = [params.offsetX, params.offsetY];
-            zr.setCursorStyle(existInstance.containPixel('grid', pointInPixel) ? 'copy' : 'default');
-        });*/
+        /* zr.on('mousemove', function (params) {
+             var pointInPixel = [params.offsetX, params.offsetY];
+             zr.setCursorStyle(existInstance.containPixel('grid', pointInPixel) ? 'copy' : 'default');
+         });*/
     }
 
 </script>
