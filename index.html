@@ -609,8 +609,8 @@
             let my_provinces = Object.keys(hData[0]);
             my_provinces.shift()
             my_provinces .splice(-2,2)
-            console.log(myArr)
-            console.log(my_provinces)
+            //console.log(myArr)
+            //console.log(my_provinces)
 
             option = {
                 tooltip: {
@@ -635,7 +635,7 @@
                         show: true
                     }
                 },
-                visualMap: {
+               /* visualMap: {
                     //type: 'piecewise',
                     type: 'continuous',
                     //  min: 0,
@@ -647,6 +647,19 @@
                     },
                     left:'90%'
                     ,top:'10%'
+                },      */
+                visualMap: {
+                    //type: 'piecewise',
+                    type: 'continuous',
+                    //  min: 0,
+                    //  max: 1,
+                    calculable: true,
+                    splitNumber: 10,
+                    inRange: {
+                        color: ['#dadada', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+                    },
+                    left:'90%'
+                    ,top:'10%'
                 },
 
                 series: [{
@@ -654,12 +667,19 @@
                     type: 'heatmap',
                     data: myArr,
                     label: {
+                        //color:function(myArr){
+                        //    console.log(1);
+                        //    return 'rgba(0, 0, 0, 0.5)'
+                        //},
                         show: true
                     },
                     emphasis: {
                         itemStyle: {
                             shadowBlur: 10,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            shadowColor: function(d){
+                                console.log(d)
+                                return 'rgba(0, 0, 0, 0.5)'}
+
                         }
                     }
                 }]
