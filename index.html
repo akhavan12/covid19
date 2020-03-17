@@ -261,8 +261,12 @@
             let minmax=get_stat_min_max(country[1])
             let color = d3.scaleLog()
                 .domain([.1,minmax[1]])
-                .range(['#cbbbbb',
-                    '#5b000e'])
+                .range([
+                    '#1dcc6b',"#ff0000"
+
+                    //'#cbbbbb',
+                    //'#5b000e'
+                ])
                 .interpolate(d3.interpolateHcl);
 
             // province name tooltip
@@ -587,13 +591,20 @@
             let myArr=[];
             let j;
 
-            for(let i=1;i<hData.length;i++)
+            for(let i=0;i<hData.length;i++)
             {
                 j=0;
+
                 for(item in hData[i]){
                     if(item !== 'Time' && item !== 'Sum' && item !== 'Total death' && item.trim() !== '')
                     {
-                        myArr.push([j,i,parseInt(hData[i][item]-hData[i-1][item])])
+                        if(i===0){
+                            myArr.push([j,i,parseInt(hData[i][item])])
+                        }
+                        else
+                        {
+                        myArr.push([j,i,Math.abs(parseInt(hData[i][item]-hData[i-1][item]))])
+                        }
                         j++;
                     }
 
@@ -653,8 +664,8 @@
                     splitNumber: 5,
                     inRange: {
                         color: ['#1dcc6b',
-                            "#ff8e18",
-                            '#8d5032',
+                           // "#ff8e18",
+                            //'#8d5032',
                             '#ff0000']
                     },
                     left:'90%'
