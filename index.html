@@ -39,7 +39,7 @@
 
 <body>
 
-<h4>Interactive Coronavirus provice level maps. </h4>
+<h4>Interactive Coronavirus province level maps. </h4>
 <p>
     <b>Click on the provinces</b> to see the charts update.
 </p>
@@ -49,12 +49,14 @@
         <td width="50%">
 
             <select id="select_countries">
+                <option value="spain" selected>Spain</option>
                 <option value="japan">Japan</option>
                 <option value="south-korea">South Korea</option>
                 <option value="iran">Iran</option>
                 <option value="italy" >Italy</option>
                 <option value="germany">Germany</option>
-                <option value="china" selected>China</option>
+                <option value="china" >China</option>
+                <option value="france">France</option>
 
                 <!--
                 <option value="france">France</option>
@@ -85,7 +87,7 @@
                  <option value="portugal">Portugal</option>
                  <option value="romania">Romania</option>
                  <option value="south-africa">South Africa</option>
-                 <option value="spain">Spain</option>
+
                  <option value="sweden">Sweden</option>
                  <option value="turkey">Turkey</option>
                  <option value="united-arab-emirates">United Arab Emirates</option>
@@ -99,7 +101,7 @@
     <tr>
         <td width="50%" height="100%">
 
-            <div id="map_container" style="height : 400px; width: 400px">
+            <div id="map_container" style="height : 400px; width: 600px">
             </div>
         </td>
         <td width="50%">
@@ -137,17 +139,11 @@
 
     let dom = document.getElementById("heatmap");
     let myChart = echarts.init(dom);
-
-
-
-
-
     function get_key_data(global_data,key) {
         let temp = [];
         global_data.forEach(function (d) {temp.push(parseInt(d[key]))});return temp}
     function get_key_Datetime(global_data,key='Time') {
         let temp = [];
-
         if(key="Time")
         {
             //global_data.forEach(function (d) {temp.push(
@@ -159,24 +155,13 @@
         {
             global_data.forEach(function (d) {temp.push(d[key])});
         }
-
-
-
         return temp}
-
-
-
-
-
-
 
     //// event handler for the change in the dropdown menu
 
     let data=[];
     let global_test;
     let mapCanvas;
-
-
     let dom_1_2 = document.getElementById('chart_1_2');
     let dom_2_1 = document.getElementById('chart_2_1');
     let dom_2_2 = document.getElementById('chart_2_2');
@@ -188,34 +173,6 @@
 
     let all_options={};
     let currentYaxisType;
-
-    function bind_Click(chart)
-    {
-        let zr = chart.getZr();
-
-        //zr.on('click', function (params) {
-        all_options=chart.getOption();
-        let clicked_div=params['event']['path'][2].id;
-        currentYaxisType=all_options.yAxis[0].type;
-        if(currentYaxisType==="value")
-        {
-            chart.setOption({yAxis:{type:'log',min:1}})
-            //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'log'}})
-        }
-        else
-        {
-            chart.setOption({yAxis:{type:'value'}})
-            //set_echarts_option(clicked_div,objOptionUpdate={yAxis:{type:'value'}})
-
-        }
-
-
-        //);}
-    }
-
-    //bind_Click(myChart_1_2)
-    //bind_Click(myChart_2_1)
-    //bind_Click(myChart_2_2)
 
     ////////////////////////////////////////
     /////// secondary functions/////////
@@ -386,9 +343,10 @@
             ////////// data collection helper
             ///////// allow us detect which of the elements in the database did not match with the map
 
-            //console.log(provinces);
+            console.log(provinces);
             //console.log("\n");
-            //console.log(NotFoundCols);
+            console.log("debug")
+            console.log(NotFoundCols);
 
 
 
@@ -745,7 +703,7 @@
             let selecteCountry='./content/countries/'+country_name+'/';
             makePlots(country_name,strCountry=selecteCountry+"/topo.json");
         });
-    makePlots(country_name='china',strCountry="./content/countries/china/topo.json");
+    makePlots(country_name='france',strCountry="./content/countries/france/topo.json");
 
 
 
