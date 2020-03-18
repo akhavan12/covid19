@@ -416,7 +416,7 @@
             data.splice(0, 1);
             let res=[];
             for(let i=1;i<data.length;i++){
-                res.push(data[i]-data[i-1])
+                res.push(Math.abs(data[i]-data[i-1]))
             }
             lines.push({name: 'daily', data: res, type: 'line'});
 
@@ -450,7 +450,7 @@
             res=[];
             for(let i=1;i<cumsum.length;i++)
             {
-                res.push(cumsum[i]-cumsum[i-1])
+                res.push(Math.abs(cumsum[i]-cumsum[i-1]))
             }
             return res;
         }
