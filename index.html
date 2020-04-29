@@ -44,9 +44,9 @@
     <b>Click on the provinces</b> to see the charts update.
 </p>
 
-<table border="0" width="30%">
+<table border="0" width="50%">
     <tr>
-        <td width="30%">
+        <td width="50%">
 
             <select id="select_countries">
                 <option value="spain">Spain</option>
@@ -100,7 +100,7 @@
     </tr>
     <!----- Map and chart row 1------>
     <tr>
-        <td width="30%" height="100%">
+        <td width="50%" height="100%">
 
             <div id="map_container" style="height : 400px; width: 400px">
             </div>
@@ -114,13 +114,13 @@
 
     <!----- Map and chart row 2------>
     <tr>
-        <td width="30%" height="100%">
+        <td width="50%" height="100%">
 
             <div id="chart_2_1" style="height : 400px; width: 400px">
             </div>
 
         </td>
-        <td width="30%">
+        <td width="50%">
             &nbsp;        <div id="chart_2_2" style="height : 400px; width:400px">
         </div>
         </td>
@@ -208,7 +208,7 @@
     /////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////
     //// main function is makePlots
-    let makePlots=function (country_name,strCountry="",width=350, height=400)
+    let makePlots=function (country_name,strCountry="",width=380, height=400)
     {
         //console.log("function makePlots");
 
@@ -225,7 +225,7 @@
 
         ///// first thing is the map
         //// initiate map function makes the map holder ready
-        function initiate_map_canvas(width=350, height=400)
+        function initiate_map_canvas(width=380, height=400)
         {
             console.log('function initiate_map_canvas')
             $("#map_container").empty()
@@ -255,7 +255,7 @@
             let feat_data=topojson.feature(map_data, map_data.objects[Object.keys(map_data.objects)[0]]);
             let center = d3.geoCentroid(country);
             let projection = d3.geoMercator()
-                .fitExtent([[0 , 0 ], [350,400]  ],feat_data);
+                .fitExtent([[0 , 0 ], [380,400]  ],feat_data);
             let path = d3.geoPath()
                 .projection(projection);
             let minmax=get_stat_min_max(country[1])
