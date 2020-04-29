@@ -44,7 +44,7 @@
     <b>Click on the provinces</b> to see the charts update.
 </p>
 
-<table border="0" width="30% !important">
+<table border="0" width="30%">
     <tr>
         <td width="30%">
 
@@ -208,7 +208,7 @@
     /////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////
     //// main function is makePlots
-    let makePlots=function (country_name,strCountry="",width=400, height=400)
+    let makePlots=function (country_name,strCountry="",width=350, height=400)
     {
         //console.log("function makePlots");
 
@@ -225,7 +225,7 @@
 
         ///// first thing is the map
         //// initiate map function makes the map holder ready
-        function initiate_map_canvas(width=400, height=400)
+        function initiate_map_canvas(width=350, height=400)
         {
             console.log('function initiate_map_canvas')
             $("#map_container").empty()
@@ -255,7 +255,7 @@
             let feat_data=topojson.feature(map_data, map_data.objects[Object.keys(map_data.objects)[0]]);
             let center = d3.geoCentroid(country);
             let projection = d3.geoMercator()
-                .fitExtent([[0 , 0 ], [400,400]  ],feat_data);
+                .fitExtent([[0 , 0 ], [350,400]  ],feat_data);
             let path = d3.geoPath()
                 .projection(projection);
             let minmax=get_stat_min_max(country[1])
